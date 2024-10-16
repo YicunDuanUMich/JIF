@@ -1,0 +1,18 @@
+io :
+  telescope : LSST
+  filter : r
+
+model :
+  model_class : GalsimGalaxyModel
+  psf_class : GalsimPSFModel  
+  model_params : hlr e1 e2 flux dx dy
+  prior_form : Empty
+
+init :
+  seed : 7272
+
+sampling :
+  nsamples : 6000
+  nwalkers : 32
+  nburn : 500
+  nthreads : 4

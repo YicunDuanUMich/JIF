@@ -165,7 +165,7 @@ class IsolatedFootprintDetectionCorrection(object):
         neg_log_prob = min(neg_log_prob, self.find_neg_log_detected_frac(flux))
         return neg_log_prob
 
-detection_corrections = {None: False,
+detection_corrections = {None: EmptyDetectionCorrection,
           'Empty': EmptyDetectionCorrection,
           'EmptyDetectionCorrection': EmptyDetectionCorrection,
           'IsolatedFootprintDetectionCorrection': IsolatedFootprintDetectionCorrection}

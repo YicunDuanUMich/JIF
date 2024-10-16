@@ -35,6 +35,7 @@ import corner
 
 import galsim
 from . import roaster
+from jiffy.roaster_args import RoasterArgs
 
 plt.style.use('ggplot')
 
@@ -122,7 +123,8 @@ class RoasterInspector(object):
     def _load_roaster_input_data(self):
         import footprints
 
-        self.roaster = roaster.Roaster(self.config)
+        self.roaster = roaster.Roaster(RoasterArgs(config_file=self.args.roaster_config,
+                                                   parallize=False))
         if self.verbose:
             print("roaster model class:", type(self.roaster.src_models[0]).__name__)
         self.roaster.initialize_param_values(self.config["init"]["init_param_file"])

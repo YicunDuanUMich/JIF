@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "jif-env"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{ include = "jiffy" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "^2.1.1"
+tqdm = "^4.66.5"
+h5py = "^3.12.1"
+pyyaml = "^6.0.2"
+matplotlib = "^3.9.2"
+jupyter = "^1.1.1"
+astropy = "^6.1.4"
+pandas = "^2.2.3"
+scipy = "^1.14.1"
+galsim = "^2.6.0"
+emcee = "^3.1.6"
+scikit-learn = "^1.5.2"
+corner = "^2.2.2"
+footprints = {git = "https://github.com/mdschneider/footprints.git"}
+einops = "^0.8.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

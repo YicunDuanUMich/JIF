@@ -33,6 +33,8 @@ import numpy as np
 import galsim
 from jiffy import galsim_psf
 
+import yaml
+
 
 # Used in validate_params()
 PARAM_BOUNDS = {
@@ -345,7 +347,10 @@ if __name__ == '__main__':
     '''
     import footprints
 
-    gg = GalsimGalaxyModel()
+    with open("./config/jiffy.yaml", "r") as f:
+        config = yaml.safe_load(f)
+
+    gg = GalsimGalaxyModel(config)
     img = gg.get_image(64, 64)
     noise_var = 1.e-8
     noise = galsim.GaussianNoise(sigma=np.sqrt(noise_var))

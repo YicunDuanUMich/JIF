@@ -228,7 +228,7 @@ class Roaster(object):
             bkg = _load_array(fp['background']) if 'background' in fp else None
         elif 'io' in self.config and 'infile' in self.config['io']:
             dat, noise_var, mask, bkg, scale, gain = footprints.load_image(self.config['io']['infile'],
-                segment=args.footprint_number, filter_name=self.config['io']['filter'])
+                segment=0, filter_name=self.config['io']['filter'])
         if dat is not None:
             self.import_data(dat, noise_var, mask=mask, bkg=bkg, scale=scale, gain=gain)
 
@@ -253,10 +253,10 @@ class Roaster(object):
         image = galsim.ImageF(self.data)
         
         flux = image.array.sum()
-        if flux < jiffy.galsim_galaxy.K_PARAM_BOUNDS['flux'][0]:
+        if flux < jiffy.galsim_galaxy.PARAM_BOUNDS['flux'][0]:
             if args.verbose:
                 print('Flux initialization from image failed - Total image flux too small.')
-        elif flux > jiffy.galsim_galaxy.K_PARAM_BOUNDS['flux'][1]:
+        elif flux > jiffy.galsim_galaxy.PARAM_BOUNDS['flux'][1]:
             if args.verbose:
                 print('Flux initialization from image failed - Total image flux too large.')
         else:
@@ -277,16 +277,16 @@ class Roaster(object):
                 'dx': (moments.moments_centroid.x - image.true_center.x) * self.scale,
                 'dy': (moments.moments_centroid.y - image.true_center.y) * self.scale}
         for paramname, paramvalue in params.items():
-            if paramvalue < jiffy.galsim_galaxy.K_PARAM_BOUNDS[paramname][0]:
+            if paramvalue < jiffy.galsim_galaxy.PARAM_BOUNDS[paramname][0]:
                 if args.verbose:
                     print('HSM estimate for', paramname, 'too small.')
                     print('Setting to lowest admissible value.')
-                paramvalue = jiffy.galsim_galaxy.K_PARAM_BOUNDS[paramname][0]
-            elif paramvalue > jiffy.galsim_galaxy.K_PARAM_BOUNDS[paramname][1]:
+                paramvalue = jiffy.galsim_galaxy.PARAM_BOUNDS[paramname][0]
+            elif paramvalue > jiffy.galsim_galaxy.PARAM_BOUNDS[paramname][1]:
                 if args.verbose:
                     print('HSM estimate for', paramname, 'too large.')
                     print('Setting to highest admissible value.')
-                paramvalue = jiffy.galsim_galaxy.K_PARAM_BOUNDS[paramname][1]
+                paramvalue = jiffy.galsim_galaxy.PARAM_BOUNDS[paramname][1]
             self.set_param_by_name(paramname, paramvalue)
 
         return None
@@ -343,7 +343,7 @@ class Roaster(object):
             elif self.mask is None:
                 npix = self.ngrid_x * self.ngrid_y
             elif np.issubdtype(type(self.mask), np.number):
-                npix = self.ngrid_x * self.ngrid_y * mask
+                npix = self.ngrid_x * self.ngrid_y * self.mask
             else:
                 npix = np.sum(self.mask)
             if npix == 0:
@@ -472,7 +472,7 @@ def do_sampling(args, rstr, return_samples=False, write_results=True, moves=None
         sampler = emcee.EnsembleSampler(nwalkers, nvars, rstr, moves=moves)
         pps, lnps = run_sampler(args, sampler, p0, nsamples, rstr)
     else:
-        with Pool() as pool:
+        with Pool(processes=4) as pool:
             sampler = emcee.EnsembleSampler(nwalkers, nvars, rstr, moves=moves, pool=pool)
             pps, lnps = run_sampler(args, sampler, p0, nsamples, rstr)
     
